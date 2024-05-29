@@ -52,7 +52,11 @@ export const data = {
 }
 function App() {
 
-  return <Bar options={options} data={data} />
+  return (<>
+  <Bar options={options} data={data} />
+  <Bar options={options} data={data} />
+  <Bar options={options} data={data} />
+  </>)
 }
 
 export default App
