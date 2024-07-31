@@ -21,6 +21,9 @@ ChartJS.register(
 )
 
 export const options = {
+
+  // const {
+    //  usersIntoPage
   responsive: true,
   plugins: {
     legend: {
@@ -53,6 +56,7 @@ export const data = {
 function App() {
 
   return (<>
+  titulo
   <Bar options={options} data={data} />
   <Bar options={options} data={data} />
   <Bar options={options} data={data} />
