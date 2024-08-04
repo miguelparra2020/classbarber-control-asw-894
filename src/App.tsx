@@ -1,5 +1,5 @@
-import './App.css'
-import React from 'react'
+import './App.css';
+import React, { useEffect, useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,6 +8,7 @@ import {
   LineElement,
   PointElement,
   LineController,
+  BarController,
   BubbleController,
   PolarAreaController,
   DoughnutController,
@@ -17,7 +18,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
-import { Bar, Line, Bubble, PolarArea, Doughnut } from 'react-chartjs-2'
+import { Chart } from 'react-chartjs-2';
 
 ChartJS.register(
   CategoryScale,
@@ -26,6 +27,7 @@ ChartJS.register(
   LineElement,
   PointElement,
   LineController,
+  BarController,
   BubbleController,
   PolarAreaController,
   DoughnutController,
@@ -34,214 +36,233 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend
-)
-
-export const barOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-    title: {
-      display: true,
-      text: 'Chart.js Bar Chart',
-    },
-  },
-};
-
-export const lineOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-    title: {
-      display: true,
-      text: 'Chart.js Line Chart',
-    },
-  },
-};
-
-export const bubbleOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-    title: {
-      display: true,
-      text: 'Chart.js Bubble Chart',
-    },
-  },
-};
-
-export const polarAreaOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-    title: {
-      display: true,
-      text: 'Chart.js Polar Area Chart',
-    },
-  },
-};
-
-export const doughnutOptions = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
-    },
-    title: {
-      display: true,
-      text: 'Chart.js Doughnut Chart',
-    },
-  },
-};
+);
 
 const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-const staticData = [200, 350, 500, 600, 800, 400, 300]
+const staticDataLast30Days = [432, 390, 560, 23, 565, 345, 123, 904, 395, 324, 99, 234, 562, 66, 322, 50, 100, 200, 65, 34, 200, 300, 234, 454, 200, 350, 500, 600, 800, 400, 300];
+const staticDataCurrentMonth = [0, 100, 290, 560, 350, 565, 345];
 
-export const barData = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: staticData,
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    },
-    {
-      label: 'Dataset 2',
-      data: staticData,
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-    },
-  ],
+const useLast30Days = () => {
+  const [dataLast30Days, setDataLast30Days] = useState<string[]>([]);
+
+  useEffect(() => {
+    const todayData = new Date();
+    const dates: string[] = [];
+
+    const formatDate = (date: Date): string => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+    };
+
+    for (let i = 0; i <= 30; i++) {
+      const date = new Date();
+      date.setDate(todayData.getDate() - i);
+      dates.unshift(formatDate(date));
+    }
+
+    setDataLast30Days(dates);
+  }, []);
+
+  return dataLast30Days;
+};
+
+const useCurrentMonthDays = () => {
+  const [dataCurrentMonth, setDataCurrentMonth] = useState<string[]>([]);
+
+  useEffect(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate(); // Número de días en el mes actual
+
+    const dates: string[] = [];
+
+    const formatDate = (date: Date): string => {
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+    };
+
+    for (let i = 1; i <= daysInMonth; i++) {
+      const date = new Date(year, month, i);
+      dates.push(formatDate(date));
+    }
+
+    setDataCurrentMonth(dates);
+  }, []);
+  return dataCurrentMonth;
 }
-
-export const lineData = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: staticData,
-      borderColor: 'rgba(255, 99, 132, 0.5)',
-      backgroundColor: 'rgba(255, 99, 132, 0.2)',
-      fill: true,
-    },
-    {
-      label: 'Dataset 2',
-      data: staticData,
-      borderColor: 'rgba(53, 162, 235, 0.5)',
-      backgroundColor: 'rgba(53, 162, 235, 0.2)',
-      fill: true,
-    },
-  ],
-}
-
-export const bubbleData = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: staticData.map((value, index) => ({ x: index, y: value, r: value / 10 })),
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    },
-    {
-      label: 'Dataset 2',
-      data: staticData.map((value, index) => ({ x: index, y: value, r: value / 10 })),
-      backgroundColor: 'rgba(53, 162, 235, 0.5)',
-    },
-  ],
-}
-
-export const polarAreaData = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: staticData,
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.5)',
-        'rgba(53, 162, 235, 0.5)',
-        'rgba(255, 206, 86, 0.5)',
-        'rgba(75, 192, 192, 0.5)',
-        'rgba(153, 102, 255, 0.5)',
-        'rgba(255, 159, 64, 0.5)',
-        'rgba(201, 203, 207, 0.5)'
-      ],
-    },
-  ],
-}
-
-export const doughnutData = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: staticData,
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.5)',
-        'rgba(53, 162, 235, 0.5)',
-        'rgba(255, 206, 86, 0.5)',
-        'rgba(75, 192, 192, 0.5)',
-        'rgba(153, 102, 255, 0.5)',
-        'rgba(255, 159, 64, 0.5)',
-        'rgba(201, 203, 207, 0.5)'
-      ],
-    },
-  ],
-}
-
-const BarChart = ({ title }: { title: string }) => (
+const BarChartLast30Days = ({ title, data }: { title: string; data: string[] }) => (
   <>
     <h1>{title}</h1>
-    <Bar options={barOptions} data={barData} />
+    <Chart type="bar" options={{
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top' as const,
+        },
+        title: {
+          display: true,
+          text: 'Estadísticas de ingresos - cantidades',
+        },
+      },
+    }} data={{
+      labels: data,
+      datasets: [
+        {
+          type: 'bar' as const,
+          label: 'Cantidad de usuarios ingresados - cantidades',
+          data: staticDataLast30Days.slice(-data.length), 
+          backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        },
+        {
+          type: 'line' as const,
+          label: 'Tendencia',
+          data: staticDataLast30Days.slice(-data.length), 
+          borderColor: 'rgba(255, 99, 132, 1)',
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          fill: true,
+        },
+      ],
+    }} />
   </>
 );
 
-const LineChart = ({ title }: { title: string }) => (
+const LineChartCurrentMonth = ({ title, data }: { title: string, data: string[] }) => (
   <>
     <h1>{title}</h1>
-    <Line options={lineOptions} data={lineData} />
+    <Chart type="line" options={{
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top' as const,
+        },
+        title: {
+          display: true,
+          text: 'Estadísticas de ingresos - cantidades',
+        },
+      },
+    }} data={{
+      labels:data,
+      datasets: [{
+        label: 'Dataset 1',
+        data: staticDataCurrentMonth,
+        borderColor: 'rgba(205, 99, 32, 0.5)',
+        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        fill: true,
+      } ],
+    }} />
   </>
 );
 
 const BubbleChart = ({ title }: { title: string }) => (
   <>
     <h1>{title}</h1>
-    <Bubble options={bubbleOptions} data={bubbleData} />
+    <Chart type="bubble" options={{
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top' as const,
+        },
+        title: {
+          display: true,
+          text: 'Chart.js Bubble Chart',
+        },
+      },
+    }} data={{
+      labels,
+      datasets: [{
+        label: 'Dataset 1',
+        data: staticDataLast30Days.map((value, index) => ({ x: index, y: value, r: value / 10 })),
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      }]
+    }} />
   </>
 );
 
 const PolarAreaChart = ({ title }: { title: string }) => (
   <>
     <h1>{title}</h1>
-    <PolarArea options={polarAreaOptions} data={polarAreaData} />
+    <Chart type="polarArea" options={{
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top' as const,
+        },
+        title: {
+          display: true,
+          text: 'Chart.js Polar Area Chart',
+        },
+      },
+    }} data={{
+      labels,
+      datasets: [{
+        label: 'Dataset 1',
+        data: staticDataLast30Days,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(53, 162, 235, 0.5)',
+          'rgba(255, 206, 86, 0.5)',
+          'rgba(75, 192, 192, 0.5)',
+          'rgba(153, 102, 255, 0.5)',
+          'rgba(255, 159, 64, 0.5)',
+          'rgba(201, 203, 207, 0.5)'
+        ],
+      }],
+    }} />
   </>
 );
 
 const DoughnutChart = ({ title }: { title: string }) => (
   <>
     <h1>{title}</h1>
-    <Doughnut options={doughnutOptions} data={doughnutData} />
+    <Chart type="doughnut" options={{
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top' as const,
+        },
+        title: {
+          display: true,
+          text: 'Chart.js Doughnut Chart',
+        },
+      },
+    }} data={{
+      labels,
+      datasets: [{
+        label: 'Dataset 1',
+        data: staticDataLast30Days,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.5)',
+          'rgba(53, 162, 235, 0.5)',
+          'rgba(255, 206, 86, 0.5)',
+          'rgba(75, 192, 192, 0.5)',
+          'rgba(153, 102, 255, 0.5)',
+          'rgba(255, 159, 64, 0.5)',
+          'rgba(201, 203, 207, 0.5)'
+        ],
+      }],
+    }} />
   </>
 );
 
 function App() {
+  const last30Days = useLast30Days();
+  const currentMonthDays = useCurrentMonthDays()
+
   return (
     <React.Fragment>
-      <BarChart title="Estadística mensual" />
-      <LineChart title="Crecimiento mes actual" />
-      <BarChart title="Dias de la semana - mes actual" />
+      <BarChartLast30Days title="Estadística últimos 30 días" data={last30Days} />
+      <LineChartCurrentMonth title="Crecimiento mes actual" data={currentMonthDays}/>
       <BubbleChart title="Países que ingresaron" />
       <BubbleChart title="Ciudades que ingresaron" />
       <PolarAreaChart title="Rutas que ingresaron" />
       <DoughnutChart title="Ingresos de celular o computador" />
-      <BarChart title="Ingresos al home - ingresos más rutas" />
     </React.Fragment>
-  )
+  );
 }
 
-export default App
+export default App;
