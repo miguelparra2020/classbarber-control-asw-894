@@ -19,6 +19,8 @@ import {
   Legend,
 } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
+import { useUsersIntoPage } from './hooks/useGetUsers';
+
 
 ChartJS.register(
   CategoryScale,
@@ -39,8 +41,11 @@ ChartJS.register(
 );
 
 const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-const staticDataLast30Days = [432, 390, 560, 23, 565, 345, 123, 904, 395, 324, 99, 234, 562, 66, 322, 50, 100, 200, 65, 34, 200, 300, 234, 454, 200, 350, 500, 600, 800, 400, 300];
-const staticDataCurrentMonth = [0, 100, 290, 560, 350, 565, 345];
+const staticDataLast30Days = [1580, 390, 560, 23, 565, 345, 123, 904, 395, 324, 99, 234, 562, 66, 322, 50, 100, 200, 65, 34, 200, 300, 234, 454, 200, 350, 500, 600, 800, 400, 300];
+
+
+
+
 
 const useLast30Days = () => {
   const [dataLast30Days, setDataLast30Days] = useState<string[]>([]);
@@ -53,7 +58,8 @@ const useLast30Days = () => {
       const day = String(date.getDate()).padStart(2, '0');
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const year = date.getFullYear();
-      return `${day}-${month}-${year}`;
+      const weekDay = date.toLocaleDateString('es-ES', { weekday: 'long' });
+      return `${weekDay}, ${day}-${month}-${year}`;
     };
 
     for (let i = 0; i <= 30; i++) {
@@ -67,6 +73,7 @@ const useLast30Days = () => {
 
   return dataLast30Days;
 };
+
 
 const useCurrentMonthDays = () => {
   const [dataCurrentMonth, setDataCurrentMonth] = useState<string[]>([]);
@@ -83,7 +90,8 @@ const useCurrentMonthDays = () => {
       const day = String(date.getDate()).padStart(2, '0');
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const year = date.getFullYear();
-      return `${day}-${month}-${year}`;
+      const weekDay = date.toLocaleDateString('es-ES', { weekday: 'long' });
+      return `${weekDay}, ${day}-${month}-${year}`;
     };
 
     for (let i = 1; i <= daysInMonth; i++) {
@@ -93,11 +101,15 @@ const useCurrentMonthDays = () => {
 
     setDataCurrentMonth(dates);
   }, []);
+
   return dataCurrentMonth;
 }
-const BarChartLast30Days = ({ title, data }: { title: string; data: string[] }) => (
+
+const BarChartLast30Days = ({ title, data,last30DaysDataUsers,quantityLast30DaysDataUsers }: { title: string; data: string[],last30DaysDataUsers: number[], quantityLast30DaysDataUsers: number }) => (
+  
   <>
     <h1>{title}</h1>
+    <h3>Cantidad de usuarios en los últimos 30 días: {quantityLast30DaysDataUsers}</h3>
     <Chart type="bar" options={{
       responsive: true,
       plugins: {
@@ -115,13 +127,13 @@ const BarChartLast30Days = ({ title, data }: { title: string; data: string[] }) 
         {
           type: 'bar' as const,
           label: 'Cantidad de usuarios ingresados - cantidades',
-          data: staticDataLast30Days.slice(-data.length), 
+          data: last30DaysDataUsers.slice(-data.length), 
           backgroundColor: 'rgba(53, 162, 235, 0.5)',
         },
         {
           type: 'line' as const,
           label: 'Tendencia',
-          data: staticDataLast30Days.slice(-data.length), 
+          data: last30DaysDataUsers.slice(-data.length), 
           borderColor: 'rgba(255, 99, 132, 1)',
           backgroundColor: 'rgba(255, 99, 132, 0.2)',
           fill: true,
@@ -131,9 +143,10 @@ const BarChartLast30Days = ({ title, data }: { title: string; data: string[] }) 
   </>
 );
 
-const LineChartCurrentMonth = ({ title, data }: { title: string, data: string[] }) => (
+const LineChartCurrentMonth = ({ title, data, actualDaysDataUsers, quantityActualDaysDataUsers }: { title: string, data: string[], actualDaysDataUsers: number[], quantityActualDaysDataUsers: number }) => (
   <>
     <h1>{title}</h1>
+    <h3>Cantidad de usuarios en el mes actual: {quantityActualDaysDataUsers}</h3>
     <Chart type="line" options={{
       responsive: true,
       plugins: {
@@ -149,7 +162,7 @@ const LineChartCurrentMonth = ({ title, data }: { title: string, data: string[] 
       labels:data,
       datasets: [{
         label: 'Dataset 1',
-        data: staticDataCurrentMonth,
+        data: actualDaysDataUsers,
         borderColor: 'rgba(205, 99, 32, 0.5)',
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
         fill: true,
@@ -249,14 +262,16 @@ const DoughnutChart = ({ title }: { title: string }) => (
   </>
 );
 
+
 function App() {
   const last30Days = useLast30Days();
   const currentMonthDays = useCurrentMonthDays()
-
+  const { last30DaysDataUsers, quantityLast30DaysDataUsers, actualDaysDataUsers, quantityActualDaysDataUsers } =  useUsersIntoPage()
+  
   return (
     <React.Fragment>
-      <BarChartLast30Days title="Estadística últimos 30 días" data={last30Days} />
-      <LineChartCurrentMonth title="Crecimiento mes actual" data={currentMonthDays}/>
+      <BarChartLast30Days title="Estadística últimos 30 días" data={last30Days} last30DaysDataUsers={last30DaysDataUsers} quantityLast30DaysDataUsers={quantityLast30DaysDataUsers}/>
+      <LineChartCurrentMonth title="Crecimiento mes actual" data={currentMonthDays} actualDaysDataUsers={actualDaysDataUsers} quantityActualDaysDataUsers={quantityActualDaysDataUsers}/>
       <BubbleChart title="Países que ingresaron" />
       <BubbleChart title="Ciudades que ingresaron" />
       <PolarAreaChart title="Rutas que ingresaron" />
