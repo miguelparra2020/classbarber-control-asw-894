@@ -171,6 +171,129 @@ const LineChartCurrentMonth = ({ title, data, actualDaysDataUsers, quantityActua
   </>
 );
 
+const BubbleChartCountriesLast30Days = ({ title, quantityCountriesLast30Days, quantityLast30DaysDataUsers }: { title: string, quantityCountriesLast30Days: { [key: string]: number }, quantityLast30DaysDataUsers: number }) => {
+  // Convertimos el objeto de países en un array de datasets para el gráfico
+  const labels = Object.keys(quantityCountriesLast30Days);
+  const data = labels.map((country) => ({
+    x: country,
+    y: quantityCountriesLast30Days[country],
+    r: Math.min(quantityCountriesLast30Days[country] / 5, 100), // Ajustar el tamaño máximo de las burbujas
+  }));
+
+  return (
+    <>
+      <h1>{title}</h1>
+      <h3>Cantidad de usuarios en los últimos 30 días: {quantityLast30DaysDataUsers}</h3>
+      <Chart
+        type="bubble"
+        options={{
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top' as const,
+            },
+            title: {
+              display: true,
+              text: 'Países que ingresaron los últimos 30 días',
+            },
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'País',
+              },
+              type: 'category',
+              labels: labels,
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Cantidad de Ingresos',
+              },
+              min: 0,
+              max: Math.max(...Object.values(quantityCountriesLast30Days)) + 6000, // Ajustar el rango máximo del eje y
+              ticks: {
+                stepSize: 10,
+              },
+            },
+          },
+        }}
+        data={{
+          labels,
+          datasets: [{
+            label: 'Cantidad de Ingresos por País',
+            data,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+          }]
+        }}
+      />
+    </>
+  );
+};
+const BubbleChartCountriesActualDays = ({ title, quantityCountriesActualDays, quantityActualDaysDataUsers }: { title: string, quantityCountriesActualDays: { [key: string]: number }, quantityActualDaysDataUsers: number }) => {
+  // Convertimos el objeto de países en un array de datasets para el gráfico
+  const labels = Object.keys(quantityCountriesActualDays);
+  const data = labels.map((country) => ({
+    x: country,
+    y: quantityCountriesActualDays[country],
+    r: Math.min(quantityCountriesActualDays[country] / 5, 100), // Ajustar el tamaño máximo de las burbujas
+  }));
+
+  return (
+    <>
+      <h1>{title}</h1>
+      <h3>Cantidad de usuarios en el mes actual: {quantityActualDaysDataUsers}</h3>
+      <Chart
+        type="bubble"
+        options={{
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top' as const,
+            },
+            title: {
+              display: true,
+              text: 'Países que ingresaron el mes actual',
+            },
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'País',
+              },
+              type: 'category',
+              labels: labels,
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Cantidad de Ingresos',
+              },
+              min: 0,
+              max: Math.max(...Object.values(quantityCountriesActualDays)) + 6000, // Ajustar el rango máximo del eje y
+              ticks: {
+                stepSize: 10,
+              },
+            },
+          },
+        }}
+        data={{
+          labels,
+          datasets: [{
+            label: 'Cantidad de Ingresos por País',
+            data,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+          }]
+        }}
+      />
+    </>
+  );
+};
+
+
+
 const BubbleChart = ({ title }: { title: string }) => (
   <>
     <h1>{title}</h1>
@@ -266,13 +389,21 @@ const DoughnutChart = ({ title }: { title: string }) => (
 function App() {
   const last30Days = useLast30Days();
   const currentMonthDays = useCurrentMonthDays()
-  const { last30DaysDataUsers, quantityLast30DaysDataUsers, actualDaysDataUsers, quantityActualDaysDataUsers } =  useUsersIntoPage()
+  const { 
+    last30DaysDataUsers, 
+    quantityLast30DaysDataUsers, 
+    actualDaysDataUsers, 
+    quantityActualDaysDataUsers, 
+    quantityCountriesLast30Days,
+    quantityCountriesActualDays 
+} =  useUsersIntoPage()
   
   return (
     <React.Fragment>
       <BarChartLast30Days title="Estadística últimos 30 días" data={last30Days} last30DaysDataUsers={last30DaysDataUsers} quantityLast30DaysDataUsers={quantityLast30DaysDataUsers}/>
       <LineChartCurrentMonth title="Crecimiento mes actual" data={currentMonthDays} actualDaysDataUsers={actualDaysDataUsers} quantityActualDaysDataUsers={quantityActualDaysDataUsers}/>
-      <BubbleChart title="Países que ingresaron" />
+      <BubbleChartCountriesLast30Days title="Países que ingresaron los últimos 30 días" quantityCountriesLast30Days={quantityCountriesLast30Days} quantityLast30DaysDataUsers={quantityLast30DaysDataUsers}/>
+      <BubbleChartCountriesActualDays title="Países que ingresaron el mes actual" quantityCountriesActualDays={quantityCountriesActualDays} quantityActualDaysDataUsers={quantityActualDaysDataUsers}/>
       <BubbleChart title="Ciudades que ingresaron" />
       <PolarAreaChart title="Rutas que ingresaron" />
       <DoughnutChart title="Ingresos de celular o computador" />
