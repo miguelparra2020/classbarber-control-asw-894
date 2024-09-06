@@ -1,17 +1,13 @@
-import { useLayoutEffect, useState } from "react"
+import axios from 'axios';
 
-export const getDataServiceFn = () => {
-    const [dataService, setDataService] = useState<string>()
-    useLayoutEffect(() => {
-        (async () => {
-            try {
-              const response = await fetch('https://backend-sistemas-autoorganizados-2.onrender.com/usersIntoPage')
-              const data = await response.json()
-              setDataService(data)
-            } catch (error) {
-              
-            }
-          })();
-        }, [])
-        return dataService
-    }
+// Función para obtener datos de una página específica
+
+export const getDataServiceFn = async ({ pageParam = 1 }) => {
+  try {
+    const response = await axios.get(`https://backend-sistemas-autoorganizados-2.onrender.com/usersIntoPage?page=${pageParam}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error; // Importante lanzar el error para que el hook lo maneje
+  }
+};

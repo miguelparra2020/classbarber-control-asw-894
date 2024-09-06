@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { getDataServiceFn } from "../api/getDataService";
 import { subDays, format, startOfMonth, differenceInCalendarDays } from "date-fns";
 
-export const useUsersIntoPage = () => {
-    const getDataServiceVar = getDataServiceFn();
+export const useUsersIntoPage = async() => {
+    const {data: getDataServiceVar} = await getDataServiceFn({ pageParam: 1 });
+    console.log(getDataServiceVar)
     const [last30DaysDataUsers, setLast30DaysDataUsers] = useState<number[]>([]);
     const [quantityLast30DaysDataUsers, setQuantityLast30DaysDataUsers] = useState<number>(0);
     const [actualDaysDataUsers, setActualDaysDataUsers] = useState<number[]>([]);
