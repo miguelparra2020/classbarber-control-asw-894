@@ -20,6 +20,8 @@ import {
 } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
 import { useUsersIntoPage } from './hooks/useGetUsers';
+import { getDataServiceFn } from './api/getDataService';
+import { useUsersData } from './api/Query/getDataQuery';
 
 
 ChartJS.register(
@@ -387,28 +389,145 @@ const DoughnutChart = ({ title }: { title: string }) => (
 
 
 function App() {
-  const last30Days = useLast30Days();
-  const currentMonthDays = useCurrentMonthDays()
-  const { 
-    last30DaysDataUsers, 
-    quantityLast30DaysDataUsers, 
-    actualDaysDataUsers, 
-    quantityActualDaysDataUsers, 
-    quantityCountriesLast30Days,
-    quantityCountriesActualDays 
-} =  useUsersIntoPage()
-  
+  const [monthSelect, setMonthSelect] = useState(new Date().getMonth() + 1);
+  const { data, hasNextPage, fetchNextPage, isFetchingNextPage } = useUsersData(monthSelect);
+
+  // Combinar todos los resultados de las páginas en un solo array
+  const allResults = data?.pages.flatMap((page: any) => page.results) || [];
+
+  // Agrupar por fecha y calcular los totales y promedios en minutos
+  const aggregatedData = allResults.reduce((acc: any, current: any) => {
+    const { date, duration_minutes } = current;
+
+    // Convertir el tiempo a minutos
+    const timeInMinutes = timeToMinutes(duration_minutes);
+
+    if (!acc[date]) {
+      acc[date] = {
+        users: 0,
+        totalTime: 0, // en minutos
+      };
+    }
+
+    // Incrementar la cantidad de usuarios y el tiempo total
+    acc[date].users += 1;
+    acc[date].totalTime += timeInMinutes;
+
+    return acc;
+  }, {});
+
+  // Función para convertir el formato de tiempo (HH:mm:ss) a minutos
+  function timeToMinutes(time: string) {
+    const [hours, minutes, seconds] = time.split(':').map(Number);
+    return hours * 60 + minutes + seconds / 60;
+  }
+
+  // Crear una tabla con la data agregada, mostrando tiempos en minutos
+  const tableData = Object.keys(aggregatedData).map((date) => {
+    const totalTimeInMinutes = aggregatedData[date].totalTime;
+    const totalUsers = aggregatedData[date].users;
+
+    // Calcular el promedio de tiempo en minutos
+    const averageTimeInMinutes = totalTimeInMinutes / totalUsers;
+
+    // Obtener el día de la semana
+    const dayOfWeek = new Date(date + 'T00:00:00').toLocaleString('es-ES', { weekday: 'long' });
+
+    return {
+        date,
+        day: dayOfWeek.charAt(0).toUpperCase() + dayOfWeek.slice(1), // Capitaliza la primera letra
+        users: totalUsers,
+        totalTime: Math.floor(totalTimeInMinutes),  // Mostrar total redondeado en minutos
+        averageTime: Math.floor(averageTimeInMinutes),  // Mostrar promedio redondeado en minutos
+    };
+});
+
+
+
+  useEffect(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      const intervalId = setInterval(() => {
+        fetchNextPage();
+      }, 500); // Llama fetchNextPage cada 2 segundos
+
+      // Limpia el intervalo cuando no hay más páginas o cuando cambie el estado
+      return () => clearInterval(intervalId);
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
   return (
-    <React.Fragment>
-      <BarChartLast30Days title="Estadística últimos 30 días" data={last30Days} last30DaysDataUsers={last30DaysDataUsers} quantityLast30DaysDataUsers={quantityLast30DaysDataUsers}/>
-      <LineChartCurrentMonth title="Crecimiento mes actual" data={currentMonthDays} actualDaysDataUsers={actualDaysDataUsers} quantityActualDaysDataUsers={quantityActualDaysDataUsers}/>
-      <BubbleChartCountriesLast30Days title="Países que ingresaron los últimos 30 días" quantityCountriesLast30Days={quantityCountriesLast30Days} quantityLast30DaysDataUsers={quantityLast30DaysDataUsers}/>
-      <BubbleChartCountriesActualDays title="Países que ingresaron el mes actual" quantityCountriesActualDays={quantityCountriesActualDays} quantityActualDaysDataUsers={quantityActualDaysDataUsers}/>
-      <BubbleChart title="Ciudades que ingresaron" />
-      <PolarAreaChart title="Rutas que ingresaron" />
-      <DoughnutChart title="Ingresos de celular o computador" />
-    </React.Fragment>
+    <div className="p-4">
+      {isFetchingNextPage && <p>Cargando más datos...</p>}
+      <div className="mb-4">
+        <label className="font-semibold">Selecciona un mes:</label>
+        <select
+          value={monthSelect}
+          onChange={(e) => setMonthSelect(Number(e.target.value))}
+          className="border rounded-md p-2 bg-white text-black ml-2"
+        >
+          <option value="1">Enero</option>
+          <option value="2">Febrero</option>
+          <option value="3">Marzo</option>
+          <option value="4">Abril</option>
+          <option value="5">Mayo</option>
+          <option value="6">Junio</option>
+          <option value="7">Julio</option>
+          <option value="8">Agosto</option>
+          <option value="9">Septiembre</option>
+          <option value="10">Octubre</option>
+          <option value="11">Noviembre</option>
+          <option value="12">Diciembre</option>
+        </select>
+      </div>
+
+      <h1 className="text-xl font-bold mb-4">Mes seleccionado: {monthSelect === 1 ? 'Enero' : 
+                             monthSelect === 2 ? 'Febrero' :  
+                             monthSelect === 3 ? 'Marzo' : 
+                             monthSelect === 4 ? 'Abril' : 
+                             monthSelect === 5 ? 'Mayo' :
+                             monthSelect === 6 ? 'Junio' :
+                             monthSelect === 7 ? 'Julio' :
+                             monthSelect === 8 ? 'Agosto' :
+                             monthSelect === 9 ? 'Septiembre' : 
+                             monthSelect === 10 ? 'Octubre' :
+                             monthSelect === 11 ? 'Noviembre' : 
+                             monthSelect === 12 ? 'Diciembre' : 'No seleccionaste un mes'
+                             }</h1>
+
+      <h2 className="text-lg mb-4">Total de usuarios del mes: {allResults.length}</h2>
+
+      {/* Tabla dinámica con estilos */}
+<div className="overflow-x-auto">
+    <table className="min-w-full border-collapse border border-gray-300 mt-4 shadow-lg">
+        <thead className="bg-gray-200">
+            <tr>                
+                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Fecha</th>
+                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Día</th>
+                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Cantidad de Usuarios</th>
+                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Total de Tiempo</th>
+                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Promedio de Tiempo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {tableData.map((row, index) => (
+                <tr key={index} className="bg-white even:bg-gray-100">                    
+                    <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.date}</td>
+                    <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.day}</td>
+                    <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.users}</td>
+                    <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.totalTime}</td>
+                    <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.averageTime}</td>
+                </tr>
+            ))}
+        </tbody>
+    </table>
+</div>
+
+    </div>
   );
 }
+
+
+
+
 
 export default App;

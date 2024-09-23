@@ -2,12 +2,12 @@ import axios from 'axios';
 
 // Función para obtener datos de una página específica
 
-export const getDataServiceFn = async ({ pageParam = 1 }) => {
+export const getDataServiceFn = async ({ monthSelect, pageParam }: any) => {
   try {
-    const response = await axios.get(`https://backend-sistemas-autoorganizados-2.onrender.com/usersIntoPage?page=${pageParam}`);
-    return response.data;
+    const response = await axios.get(`https://sistemasautoorganizados.pythonanywhere.com/api/user-interactions/?month=${monthSelect}&page=${pageParam}`);
+    return response.data; // Asegúrate de que response.data contiene correctamente la página y los resultados
   } catch (error) {
     console.error('Error fetching data:', error);
-    throw error; // Importante lanzar el error para que el hook lo maneje
+    throw error;
   }
 };
