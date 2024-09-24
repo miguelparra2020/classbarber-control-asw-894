@@ -19,8 +19,6 @@ import {
   Legend,
 } from 'chart.js';
 import { Chart } from 'react-chartjs-2';
-// import { useUsersIntoPage } from './hooks/useGetUsers';
-// import { getDataServiceFn } from './api/getDataService';
 import { useUsersData } from './api/Query/getDataQuery';
 
 
@@ -42,134 +40,10 @@ ChartJS.register(
   Legend
 );
 
-// const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-// const staticDataLast30Days = [1580, 390, 560, 23, 565, 345, 123, 904, 395, 324, 99, 234, 562, 66, 322, 50, 100, 200, 65, 34, 200, 300, 234, 454, 200, 350, 500, 600, 800, 400, 300];
 
 
 
 
-
-
-
-// const useCurrentMonthDays = () => {
-//   const [dataCurrentMonth, setDataCurrentMonth] = useState<string[]>([]);
-
-//   useEffect(() => {
-//     const today = new Date();
-//     const year = today.getFullYear();
-//     const month = today.getMonth();
-//     const daysInMonth = new Date(year, month + 1, 0).getDate(); // Número de días en el mes actual
-
-//     const dates: string[] = [];
-
-//     const formatDate = (date: Date): string => {
-//       const day = String(date.getDate()).padStart(2, '0');
-//       const month = String(date.getMonth() + 1).padStart(2, '0');
-//       const year = date.getFullYear();
-//       const weekDay = date.toLocaleDateString('es-ES', { weekday: 'long' });
-//       return `${weekDay}, ${day}-${month}-${year}`;
-//     };
-
-//     for (let i = 1; i <= daysInMonth; i++) {
-//       const date = new Date(year, month, i);
-//       dates.push(formatDate(date));
-//     }
-
-//     setDataCurrentMonth(dates);
-//   }, []);
-
-//   return dataCurrentMonth;
-// }
-
-
-// const LineChartCurrentMonth = ({ title, data, actualDaysDataUsers, quantityActualDaysDataUsers }: { title: string, data: string[], actualDaysDataUsers: number[], quantityActualDaysDataUsers: number }) => (
-//   <>
-//     <h1>{title}</h1>
-//     <h3>Cantidad de usuarios en el mes actual: {quantityActualDaysDataUsers}</h3>
-//     <Chart type="line" options={{
-//       responsive: true,
-//       plugins: {
-//         legend: {
-//           position: 'top' as const,
-//         },
-//         title: {
-//           display: true,
-//           text: 'Estadísticas de ingresos - cantidades',
-//         },
-//       },
-//     }} data={{
-//       labels:data,
-//       datasets: [{
-//         label: 'Dataset 1',
-//         data: actualDaysDataUsers,
-//         borderColor: 'rgba(205, 99, 32, 0.5)',
-//         backgroundColor: 'rgba(255, 99, 132, 0.2)',
-//         fill: true,
-//       } ],
-//     }} />
-//   </>
-// );
-
-// const BubbleChartCountriesLast30Days = ({ title, quantityCountriesLast30Days, quantityLast30DaysDataUsers }: { title: string, quantityCountriesLast30Days: { [key: string]: number }, quantityLast30DaysDataUsers: number }) => {
-//   // Convertimos el objeto de países en un array de datasets para el gráfico
-//   const labels = Object.keys(quantityCountriesLast30Days);
-//   const data = labels.map((country) => ({
-//     x: country,
-//     y: quantityCountriesLast30Days[country],
-//     r: Math.min(quantityCountriesLast30Days[country] / 5, 100), // Ajustar el tamaño máximo de las burbujas
-//   }));
-
-//   return (
-//     <>
-//       <h1>{title}</h1>
-//       <h3>Cantidad de usuarios en los últimos 30 días: {quantityLast30DaysDataUsers}</h3>
-//       <Chart
-//         type="bubble"
-//         options={{
-//           responsive: true,
-//           plugins: {
-//             legend: {
-//               position: 'top' as const,
-//             },
-//             title: {
-//               display: true,
-//               text: 'Países que ingresaron los últimos 30 días',
-//             },
-//           },
-//           scales: {
-//             x: {
-//               title: {
-//                 display: true,
-//                 text: 'País',
-//               },
-//               type: 'category',
-//               labels: labels,
-//             },
-//             y: {
-//               title: {
-//                 display: true,
-//                 text: 'Cantidad de Ingresos',
-//               },
-//               min: 0,
-//               max: Math.max(...Object.values(quantityCountriesLast30Days)) + 6000, // Ajustar el rango máximo del eje y
-//               ticks: {
-//                 stepSize: 10,
-//               },
-//             },
-//           },
-//         }}
-//         data={{
-//           labels,
-//           datasets: [{
-//             label: 'Cantidad de Ingresos por País',
-//             data,
-//             backgroundColor: 'rgba(75, 192, 192, 0.5)',
-//           }]
-//         }}
-//       />
-//     </>
-//   );
-// };
 // const BubbleChartCountriesActualDays = ({ title, quantityCountriesActualDays, quantityActualDaysDataUsers }: { title: string, quantityCountriesActualDays: { [key: string]: number }, quantityActualDaysDataUsers: number }) => {
 //   // Convertimos el objeto de países en un array de datasets para el gráfico
 //   const labels = Object.keys(quantityCountriesActualDays);
@@ -372,7 +246,93 @@ const BarChartMonthDays = ({ title, monthDaysUsers, monthSelect }: { title: stri
     </>
   );
 };
+const BubbleChartCountries = ({ title, datos }: { title: string; datos: { country: string; users: number; totalTime: number; averageTime: number }[] }) => {
+  // Mapeo de datos para la gráfica
+  const data = datos.map((item) => ({
+    x: item.country,
+    y: item.users, // Utilizamos la cantidad de usuarios para el eje Y
+    r: Math.min(item.users / 5, 100), // Ajustamos el tamaño máximo de las burbujas
+  }));
 
+  return (
+    <>
+      <h1>{title}</h1>
+      <Chart
+        type="bubble"
+        options={{
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top' as const,
+            },
+            title: {
+              display: true,
+              text: 'Países que han ingresado',
+            },
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'País',
+              },
+              type: 'category',
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Cantidad de Usuarios',
+              },
+              min: -5000,
+              max: Math.max(...datos.map(item => item.users)) + 10000, // Ajustar el rango máximo del eje Y
+              ticks: {
+                stepSize: 1,
+              },
+            },
+          },
+        }}
+        data={{
+          datasets: [{
+            label: 'Cantidad de Usuarios por País',
+            data,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+          }]
+        }}
+      />
+    </>
+  );
+};
+
+
+// Componente de la tabla de países
+const CountryTable = ({ data }: { data: { country: string; users: number; totalTime: number; averageTime: number }[] }) => {
+  const renderRow = (row: any, index: number) => (
+    <tr key={index} className="bg-white even:bg-gray-100">
+      <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.country}</td>
+      <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.users}</td>
+      <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.totalTime}</td>
+      <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{Math.floor(row.averageTime)}</td>
+    </tr>
+  );
+
+  return (
+    <div className="overflow-x-auto mt-4">
+      <table className="min-w-full border-collapse border border-gray-300 shadow-lg">
+        <thead className="bg-gray-200">
+          <tr>
+            <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">País</th>
+            <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Cantidad de Usuarios</th>
+            <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Total Tiempo (min)</th>
+            <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Promedio Tiempo (min)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map(renderRow)}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 function App() {
   const [monthSelect, setMonthSelect] = useState(new Date().getMonth() + 1);
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } = useUsersData(monthSelect);
@@ -422,6 +382,7 @@ function App() {
    const tableData = Object.keys(aggregatedData).map((date) => {
     const totalTimeInMinutes = aggregatedData[date].totalTime;
     const totalUsers = aggregatedData[date].users;
+    
 
     // Calcular el promedio de tiempo en minutos
     const averageTimeInMinutes = totalTimeInMinutes / totalUsers;
@@ -437,6 +398,43 @@ function App() {
         averageTime: Math.floor(averageTimeInMinutes),  // Mostrar promedio redondeado en minutos
     };
 });
+
+// Dentro del componente App
+const countryData = allResults.reduce((acc: any, current: any) => {
+  const { country, duration_minutes } = current;
+
+  if (!country || !duration_minutes) return acc; // Control de datos faltantes
+
+  // Convertir el tiempo a minutos
+  const timeInMinutes = timeToMinutes(duration_minutes);
+
+  // Si el país no está en el acumulador, inicializa
+  if (!acc[country]) {
+    acc[country] = {
+      users: 0,
+      totalTime: 0,
+    };
+  }
+
+  // Acumula la cantidad de usuarios y el tiempo
+  acc[country].users += 1; // Cantidad de usuarios
+  acc[country].totalTime += timeInMinutes; // Total tiempo en minutos
+
+  return acc;
+}, {});
+
+const countryDataArray = Object.keys(countryData).map(country => {
+  const { users, totalTime } = countryData[country];
+  const averageTime = totalTime / users; // Calcular promedio
+
+  return {
+    country,
+    users, // Cantidad de usuarios
+    totalTime, // Total de tiempo
+    averageTime, // Promedio de tiempo
+  };
+}).sort((a, b) => b.users - a.users);
+
 
   useEffect(() => {
     if (hasNextPage && !isFetchingNextPage) {
@@ -510,6 +508,11 @@ function App() {
           </tbody>
         </table>
       </div>
+          <br />
+      {/* Componente de gráfica de burbujas */}
+      <BubbleChartCountries title="Ingreso por País" datos={countryDataArray} />
+
+      <CountryTable data={countryDataArray} />
     </div>
   );
 }
