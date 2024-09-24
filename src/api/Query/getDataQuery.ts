@@ -9,10 +9,7 @@ export const useUsersData = (monthSelect: number) => {
       const { current_page, total_pages } = lastPage; // Verifica los nombres de estos campos
       return current_page < total_pages ? current_page + 1 : undefined; // Devolver el número de la siguiente página
     },
-    staleTime: 1000 * 60 * 5,
-    cacheTime: 1000 * 60 * 10,
+    staleTime: 1000 * 60 * 5, // Mantener los datos frescos por 5 minutos
+    // Eliminado cacheTime
   });
 };
-
-
-  
