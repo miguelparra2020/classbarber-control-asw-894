@@ -303,9 +303,70 @@ const BubbleChartCountries = ({ title, datos }: { title: string; datos: { countr
   );
 };
 
+const BubbleChartCities = ({ title, datos }: { title: string; datos: { city: string; users: number; totalTime: number; averageTime: number }[] }) => {
+  // Mapeo de datos para la gráfica
+  const data = datos.map((item) => ({
+    x: item.city,
+    y: item.users, // Utilizamos la cantidad de usuarios para el eje Y
+    r: Math.min(item.users / 5, 100), // Ajustamos el tamaño máximo de las burbujas
+  }));
+
+  return (
+    <>
+      <h1>{title}</h1>
+      <Chart
+        type="bubble"
+        options={{
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'top' as const,
+            },
+            title: {
+              display: true,
+              text: 'Ciudades que han ingresado',
+            },
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'Ciudad',
+              },
+              type: 'category',
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Cantidad de Usuarios',
+              },
+              min: -5000,
+              max: Math.max(...datos.map(item => item.users)) + 10000, // Ajustar el rango máximo del eje Y
+              ticks: {
+                stepSize: 1,
+              },
+            },
+          },
+        }}
+        data={{
+          datasets: [{
+            label: 'Cantidad de Usuarios por Ciudad',
+            data,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+          }]
+        }}
+      />
+    </>
+  );
+};
+
 
 // Componente de la tabla de países
 const CountryTable = ({ data }: { data: { country: string; users: number; totalTime: number; averageTime: number }[] }) => {
+  if (!data.length) {
+    return <p>No hay datos disponibles.</p>; // Manejo de caso sin datos
+  }
+
   const renderRow = (row: any, index: number) => (
     <tr key={index} className="bg-white even:bg-gray-100">
       <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.country}</td>
@@ -333,6 +394,40 @@ const CountryTable = ({ data }: { data: { country: string; users: number; totalT
     </div>
   );
 };
+
+const CityTable = ({ data }: { data: { city: string; users: number; totalTime: number; averageTime: number }[] }) => {
+  if (!data.length) {
+    return <p>No hay datos disponibles.</p>; // Manejo de caso sin datos
+  }
+
+  const renderRow = (row: any, index: number) => (
+    <tr key={index} className="bg-white even:bg-gray-100">
+      <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.city}</td>
+      <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.users}</td>
+      <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.totalTime}</td>
+      <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{Math.floor(row.averageTime)}</td>
+    </tr>
+  );
+
+  return (
+    <div className="overflow-x-auto mt-4">
+      <table className="min-w-full border-collapse border border-gray-300 shadow-lg">
+        <thead className="bg-gray-200">
+          <tr>
+            <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Ciudad</th>
+            <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Cantidad de Usuarios</th>
+            <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Total Tiempo (min)</th>
+            <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Promedio Tiempo (min)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map(renderRow)}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
 function App() {
   const [monthSelect, setMonthSelect] = useState(new Date().getMonth() + 1);
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } = useUsersData(monthSelect);
@@ -425,13 +520,48 @@ const countryData = allResults.reduce((acc: any, current: any) => {
 
 const countryDataArray = Object.keys(countryData).map(country => {
   const { users, totalTime } = countryData[country];
-  const averageTime = totalTime / users; // Calcular promedio
+  const averageTime = users ? totalTime / users : 0; // Manejo de división por cero
 
   return {
     country,
-    users, // Cantidad de usuarios
-    totalTime, // Total de tiempo
-    averageTime, // Promedio de tiempo
+    users,
+    totalTime,
+    averageTime,
+  };
+}).sort((a, b) => b.users - a.users);
+
+const cityData = allResults.reduce((acc: any, current: any) => {
+  const { city, duration_minutes } = current;
+
+  if (!city || !duration_minutes) return acc; // Control de datos faltantes
+
+  // Convertir el tiempo a minutos
+  const timeInMinutes = timeToMinutes(duration_minutes);
+
+  // Si la ciudad no está en el acumulador, inicializa
+  if (!acc[city]) {
+    acc[city] = {
+      users: 0,
+      totalTime: 0,
+    };
+  }
+
+  // Acumula la cantidad de usuarios y el tiempo
+  acc[city].users += 1; // Cantidad de usuarios
+  acc[city].totalTime += timeInMinutes; // Total tiempo en minutos
+
+  return acc;
+}, {});
+
+const cityDataArray = Object.keys(cityData).map(city => {
+  const { users, totalTime } = cityData[city];
+  const averageTime = users ? totalTime / users : 0; // Manejo de división por cero
+
+  return {
+    city,
+    users,
+    totalTime,
+    averageTime,
   };
 }).sort((a, b) => b.users - a.users);
 
@@ -510,9 +640,16 @@ const countryDataArray = Object.keys(countryData).map(country => {
       </div>
           <br />
       {/* Componente de gráfica de burbujas */}
-      <BubbleChartCountries title="Ingreso por País" datos={countryDataArray} />
+      <BubbleChartCountries title="Cantidad de usuarios por País" datos={countryDataArray} />
 
       <CountryTable data={countryDataArray} />
+          <br />
+      <BubbleChartCities 
+          title="Cantidad de Usuarios por Ciudad"
+          datos={cityDataArray}
+        />
+
+      <CityTable data={cityDataArray} />
     </div>
   );
 }
