@@ -10,6 +10,6 @@ export const useUsersData = (monthSelect: number) => {
       return current_page < total_pages ? current_page + 1 : undefined; // Devolver el número de la siguiente página
     },
     staleTime: 1000 * 60 * 5, // Mantener los datos frescos por 5 minutos
-    // Eliminado cacheTime
+    initialPageParam: 1, // Agregar esta línea para establecer el valor inicial
   });
 };
