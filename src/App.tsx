@@ -246,6 +246,64 @@ const BarChartMonthDays = ({ title, monthDaysUsers, monthSelect }: { title: stri
     </>
   );
 };
+const BarChartWeekDays = ({ title, weekDaysUsers }: { title: string; weekDaysUsers: any }) => {
+  // Nombres de los días de la semana en español
+  const weekDayNames = ['Lunes - '+weekDaysUsers[0], 'Martes - '+weekDaysUsers[1], 'Miércoles - '+weekDaysUsers[2], 'Jueves  - '+weekDaysUsers[3], 'Viernes - '+weekDaysUsers[4], 'Sábado - '+weekDaysUsers[5], 'Domingo - '+weekDaysUsers[6]];
+
+  // Colores del arcoiris para cada día de la semana
+  const rainbowColors = [
+    'rgba(255, 0, 0, 0.7)',    // Rojo (Lunes)
+    'rgba(255, 165, 0, 0.7)',  // Naranja (Martes)
+    'rgba(255, 255, 0, 0.7)',  // Amarillo (Miércoles)
+    'rgba(0, 128, 0, 0.7)',    // Verde (Jueves)
+    'rgba(0, 0, 255, 0.7)',    // Azul (Viernes)
+    'rgba(75, 0, 130, 0.7)',   // Índigo (Sábado)
+    'rgba(238, 130, 238, 0.7)' // Violeta (Domingo)
+  ];
+
+  // Verificamos que la longitud del array coincida con los 7 días de la semana
+  if (weekDaysUsers.length !== 7) {
+    throw new Error('El array weekDaysUsers debe contener exactamente 7 elementos.');
+  }
+  
+
+  return (
+    <>
+      <h1>{title}</h1>
+      <Chart 
+        type="bar" 
+        options={{
+          responsive: true,
+          plugins: {
+            legend: { position: 'top' },
+            title: { display: true, text: 'Estadísticas de usuarios por día de la semana' },
+          },
+        }} 
+        data={{
+          labels: weekDayNames, // Nombres de los días de la semana
+          datasets: [
+            {
+              type: 'bar',
+              label: 'Cantidad de usuarios',
+              data: weekDaysUsers,
+              backgroundColor: rainbowColors, // Aplicar colores del arcoiris
+            },
+            {
+              type: 'line',
+              label: 'Tendencia',
+              data: weekDaysUsers, 
+              borderColor: 'rgba(255, 99, 132, 1)',
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              fill: true,
+            },
+          ],
+        }} 
+      />
+    </>
+  );
+};
+
+
 const BubbleChartCountries = ({ title, datos }: { title: string; datos: { country: string; users: number; totalTime: number; averageTime: number }[] }) => {
   // Mapeo de datos para la gráfica
   const data = datos.map((item) => ({
@@ -441,6 +499,43 @@ function App() {
   // Combinar todos los resultados de las páginas en un solo array
   const allResults = data?.pages.flatMap((page: any) => page.results) || [];
 
+  function countUsersByWeekDay(allResults: any) {
+    // Inicializar un arreglo con 7 posiciones para cada día de la semana (lunes a domingo)
+    let weekDaysUsers = [0, 0, 0, 0, 0, 0, 0]; // [lunes, martes, ..., domingo]
+
+    // Iterar sobre los resultados
+    allResults.forEach((result: any) => {
+        // Extraer la fecha del campo 'date'
+        const dateStr = result.date; // Ejemplo: '2024-09-27'
+        
+        // Crear un objeto Date
+        const dateObj = new Date(dateStr);
+        
+        // Obtener el día de la semana (0 es domingo, 1 es lunes, ..., 6 es sábado)
+        const dayOfWeek = dateObj.getDay(); // Este devuelve de 0 (domingo) a 6 (sábado)
+        
+        // Depuración: Imprimir día de la semana
+        console.log(`Fecha: ${dateStr}, Día de la semana (getDay): ${dayOfWeek}`);
+
+        // Mapear el día de la semana para que empiece desde lunes (0)
+        const mappedDay = dayOfWeek === 0 ? 6 : dayOfWeek - 1; 
+        
+        // Depuración: Imprimir día mapeado
+        console.log(`Día mapeado (lunes = 0): ${mappedDay}`);
+
+        // Incrementar el contador para el día correspondiente
+        weekDaysUsers[mappedDay] += 1;
+    });
+
+    // Depuración: Ver los resultados
+    console.log("Conteo de usuarios por día de la semana:", weekDaysUsers);
+    const adjustedWeekDaysUsers = [weekDaysUsers.pop(), ...weekDaysUsers]
+    
+    return adjustedWeekDaysUsers;
+}
+
+const weekDaysUsers = countUsersByWeekDay(allResults);
+
   // Agrupar por fecha y calcular los totales y promedios en minutos
   const aggregatedData = allResults.reduce((acc: any, current: any) => {
     const { date, duration_minutes } = current;
@@ -612,6 +707,8 @@ const cityDataArray = Object.keys(cityData).map(city => {
         monthDaysUsers={dataUsers}
         monthSelect={monthSelect}
       />
+
+      <BarChartWeekDays title='Usuarios por día de la semana' weekDaysUsers={weekDaysUsers}/>
 
       {/* Tabla dinámica con estilos */}
       <div className="overflow-x-auto">
