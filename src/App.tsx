@@ -327,84 +327,18 @@
     };
     
 
-    // Componente de la tabla de países
-    const CountryTable = ({ data }: { data: { country: string; users: number; totalTime: number; averageTime: number }[] }) => {
+    const GenericTable = ({ data, columns }: { data: any[]; columns: { key: string; label: string }[] }) => {
       if (!data.length) {
-        return <p>No hay datos disponibles.</p>; // Manejo de caso sin datos
-      }
-
-      const renderRow = (row: any, index: number) => (
-        <tr key={index} className="bg-white even:bg-gray-100">
-          <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.country}</td>
-          <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.users}</td>
-          <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.totalTime} min</td>
-          <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.averageTime} min</td>
-        </tr>
-      );
-
-      return (
-        <div className="overflow-x-auto mt-4">
-          <table className="min-w-full border-collapse border border-gray-300 shadow-lg">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">País</th>
-                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Cantidad de Usuarios</th>
-                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Total Tiempo (min)</th>
-                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Promedio Tiempo (min)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map(renderRow)}
-            </tbody>
-          </table>
-        </div>
-      );
-    };
-
-    const CityTable = ({ data }: { data: { city: string; users: number; totalTime: number; averageTime: number }[] }) => {
-      if (!data.length) {
-        return <p>No hay datos disponibles.</p>; // Manejo de caso sin datos
-      }
-
-      const renderRow = (row: any, index: number) => (
-        <tr key={index} className="bg-white even:bg-gray-100">
-          <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.city}</td>
-          <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.users}</td>
-          <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.totalTime} min</td>
-          <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.averageTime} min</td>
-        </tr>
-      );
-
-      return (
-        <div className="overflow-x-auto mt-4">
-          <table className="min-w-full border-collapse border border-gray-300 shadow-lg">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Ciudad</th>
-                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Cantidad de Usuarios</th>
-                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Total Tiempo (min)</th>
-                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Promedio Tiempo (min)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map(renderRow)}
-            </tbody>
-          </table>
-        </div>
-      );
-    };
-
-    const PathTable = ({ data }: any) => {
-      if (!data.length) {
-        return <p>No hay datos disponibles.</p>; // Manejo de caso sin datos
+        return <p>No hay datos disponibles.</p>;
       }
     
       const renderRow = (row: any, index: number) => (
         <tr key={index} className="bg-white even:bg-gray-100">
-          <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.path}</td>
-          <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.users}</td>
-          {/* <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row["total de tiempo (min)"]} min</td>
-          <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row["promedio tiempo (min)"]} min</td> */}
+          {columns.map((col) => (
+            <td key={col.key} className="border border-gray-300 px-6 py-4 text-sm text-gray-700">
+              {row[col.key]}
+            </td>
+          ))}
         </tr>
       );
     
@@ -413,52 +347,18 @@
           <table className="min-w-full border-collapse border border-gray-300 shadow-lg">
             <thead className="bg-gray-200">
               <tr>
-                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Ruta</th>
-                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Cantidad de Usuarios</th>
-                {/* <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Total Tiempo (min)</th>
-                <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Promedio Tiempo (min)</th> */}
+                {columns.map((col) => (
+                  <th key={col.key} className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">
+                    {col.label}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody>
-              {data.map(renderRow)}
-            </tbody>
+            <tbody>{data.map(renderRow)}</tbody>
           </table>
         </div>
       );
     };
-    // const DeviceTable = ({ data }: any) => {
-    //   if (!data.length) {
-    //     return <p>No hay datos disponibles.</p>; // Manejo de caso sin datos
-    //   }
-    
-    //   const renderRow = (row: any, index: number) => (
-    //     <tr key={index} className="bg-white even:bg-gray-100">
-    //       <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.device}</td>
-    //       <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.users}</td>
-    //       {/* <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row["total de tiempo (min)"]} min</td>
-    //       <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row["promedio tiempo (min)"]} min</td> */}
-    //     </tr>
-    //   );
-    
-    //   return (
-    //     <div className="overflow-x-auto mt-4">
-    //       <table className="min-w-full border-collapse border border-gray-300 shadow-lg">
-    //         <thead className="bg-gray-200">
-    //           <tr>
-    //             <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Dispositivo</th>
-    //             <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Cantidad de Usuarios</th>
-    //             {/* <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Total Tiempo (min)</th>
-    //             <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Promedio Tiempo (min)</th> */}
-    //           </tr>
-    //         </thead>
-    //         <tbody>
-    //           {data.map(renderRow)}
-    //         </tbody>
-    //       </table>
-    //     </div>
-    //   );
-    // };
-
     
 
     function App() {
@@ -473,7 +373,6 @@
 
       // Combinar todos los resultados de las páginas en un solo array
       const allResults = data?.pages.flatMap((page: any) => page.results) || [];
-
       function countUsersByWeekDay(allResults: any) {
         // Inicializar un arreglo con 7 posiciones para cada día de la semana (lunes a domingo)
         let weekDaysUsers = [0, 0, 0, 0, 0, 0, 0]; // [lunes, martes, ..., domingo]
@@ -507,9 +406,9 @@
         const adjustedWeekDaysUsers = [weekDaysUsers.pop(), ...weekDaysUsers]
         
         return adjustedWeekDaysUsers;
-    }
+      }
 
-    const weekDaysUsers = countUsersByWeekDay(allResults);
+      const weekDaysUsers = countUsersByWeekDay(allResults);
 
       // Agrupar por fecha y calcular los totales y promedios en minutos
       const aggregatedData = allResults.reduce((acc: any, current: any) => {
@@ -653,13 +552,16 @@
       users: pathDataArray[path].users
     })).sort((a, b) => b.users - a.users).splice(0, 20); // Ordenar por cantidad de usuarios
 
+
     const deviceCount = allResults.reduce((acc, { device }) => {
       const formattedDevice = device.charAt(0).toUpperCase() + device.slice(1).toLowerCase();
       acc[formattedDevice] = (acc[formattedDevice] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
-    
-  
+    const deviceCountArray = Object.entries(deviceCount).map(([device, users]) => ({
+      device,
+      users
+    }));
     // Preparar datos para la gráfica
     const pieData: PieChartData = {
       labels: Object.keys(deviceCount),
@@ -680,6 +582,20 @@
       ],
     };
 
+    const monthlySummary = allResults.reduce((acc: any, current: any) => {
+      const { duration_minutes } = current;
+    
+      // Convertir el tiempo a minutos
+      const timeInMinutes = timeToMinutes(duration_minutes);
+    
+      // Incrementar la cantidad de usuarios y el tiempo total del mes
+      acc.totalUsers += 1;
+      acc.totalTime += timeInMinutes;
+      acc.averageTime = acc.totalTime / acc.totalUsers;
+      return acc;
+    }, { totalUsers: 0, totalTime: 0, averageTime: 0 });
+
+    const monthlySummaryArray = [monthlySummary]
       useEffect(() => {
         if (hasNextPage && !isFetchingNextPage) {
           const intervalId = setInterval(() => {
@@ -730,51 +646,76 @@
           <BarChartWeekDays title='Usuarios por día de la semana' weekDaysUsers={weekDaysUsers}/>
 
           {/* Tabla dinámica con estilos */}
-          <div className="overflow-x-auto">
-            <table className="min-w-full border-collapse border border-gray-300 mt-4 shadow-lg">
-              <thead className="bg-gray-200">
-                <tr>                
-                  <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Fecha</th>
-                  <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Día</th>
-                  <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Cantidad de Usuarios</th>
-                  <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Total de Tiempo (min)</th>
-                  <th className="border border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-600">Promedio de Tiempo (min)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {tableData.map((row, index) => (
-                  <tr key={index} className="bg-white even:bg-gray-100">                    
-                    <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.date}</td>
-                    <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.day}</td>
-                    <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.users}</td>
-                    <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.totalTime} min</td>
-                    <td className="border border-gray-300 px-6 py-4 text-sm text-gray-700">{row.averageTime} min</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-              <br />
+                        <br />
+              <GenericTable 
+            data={tableData}
+            columns={[
+              { key: 'date', label: 'Fecha' },
+              { key: 'day', label: 'Día' },
+              { key: 'users', label: 'Cantidad de Usuarios' },
+              { key: 'totalTime', label: 'Total de Tiempo (min)' },
+              { key: 'averageTime', label: 'Promedio Tiempo (min)' }
+            ]}
+          />
+          <br />
           {/* Componente de gráfica de burbujas */}
           <BubbleChartCountries title="Cantidad de usuarios por País" datos={countryDataArray} />
 
-          <CountryTable data={countryDataArray} />
+          <GenericTable 
+            data={countryDataArray}
+            columns={[
+              { key: 'country', label: 'País' },
+              { key: 'users', label: 'Cantidad de Usuarios' },
+              { key: 'totalTime', label: 'Total Tiempo (min)' },
+              { key: 'averageTime', label: 'Promedio Tiempo (min)' }
+            ]}
+          />
               <br />
           <BubbleChartCities 
               title="Cantidad de Usuarios por Ciudad"
               datos={cityDataArray}
             />
 
-          <CityTable data={cityDataArray} />
+            <GenericTable 
+              data={cityDataArray}
+              columns={[
+                { key: 'city', label: 'Ciudad' },
+                { key: 'users', label: 'Cantidad de Usuarios' },
+                { key: 'totalTime', label: 'Total Tiempo (min)' },
+                { key: 'averageTime', label: 'Promedio Tiempo (min)' }
+              ]}
+            />
                 <br />
           <BarChartPaths title="Usuarios por Ruta" pathData={pathData} />
           <br />
           <h1>Tabla de Rutas</h1>
-          <PathTable data={pathData} /> {/* Pasar los datos a la tabla */}
+          <GenericTable 
+              data={pathData}
+              columns={[
+                { key: 'path', label: 'Ruta' },
+                { key: 'users', label: 'Cantidad de Usuarios' }
+              ]}
+            />
           <br />
           <PieChart data={pieData} />
           <br />
-          {/* <DeviceTable data={deviceData} /> */}
+          <GenericTable 
+              data={deviceCountArray}
+              columns={[
+                { key: 'device', label: 'Dispositivo' },
+                { key: 'users', label: 'Cantidad de Usuarios' }
+              ]}
+            />
+            <br />
+            <h1>Totales</h1>
+            <GenericTable 
+              data={monthlySummaryArray}
+              columns={[
+                { key: 'totalUsers', label: 'Total de Usuarios' },
+                { key: 'totalTime', label: 'Total de Tiempo (min)' },
+                { key: 'averageTime', label: 'Promedio de Tiempo (min)' },
+              ]}
+            />
            </div>
       );
     }
