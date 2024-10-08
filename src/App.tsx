@@ -319,7 +319,9 @@
       return (
         <>
           <h1>Diagrama de Pastel</h1>
+          <div style={{ width: '100%', height: '400px', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           <Pie data={data} options={options} />
+          </div>
         </>
       );
     };
@@ -560,7 +562,7 @@
             totalTime: totalTimeInMinutes,  // Mostrar total redondeado en minutos
             averageTime: averageTimeInMinutes,  // Mostrar promedio redondeado en minutos
         };
-    });
+      });
 
     // Dentro del componente App
     const countryData = allResults.reduce((acc: any, current: any) => {
@@ -596,7 +598,7 @@
         totalTime,
         averageTime,
       };
-    }).sort((a, b) => b.users - a.users);
+    }).sort((a, b) => b.users - a.users).splice(0, 20);
 
     const cityData = allResults.reduce((acc: any, current: any) => {
       const { city, duration_minutes } = current;
@@ -631,7 +633,7 @@
         totalTime,
         averageTime,
       };
-    }).sort((a, b) => b.users - a.users);
+    }).sort((a, b) => b.users - a.users).splice(0, 20);
 
     // Lógica para agrupar por ruta
     const pathDataArray = allResults.reduce((acc: any, current: any) => {
@@ -649,12 +651,14 @@
     const pathData = Object.keys(pathDataArray).map(path => ({
       path,
       users: pathDataArray[path].users
-    })).sort((a, b) => b.users - a.users); // Ordenar por cantidad de usuarios
+    })).sort((a, b) => b.users - a.users).splice(0, 20); // Ordenar por cantidad de usuarios
 
     const deviceCount = allResults.reduce((acc, { device }) => {
-      acc[device] = (acc[device] || 0) + 1;
+      const formattedDevice = device.charAt(0).toUpperCase() + device.slice(1).toLowerCase();
+      acc[formattedDevice] = (acc[formattedDevice] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
+    
   
     // Preparar datos para la gráfica
     const pieData: PieChartData = {
