@@ -57,7 +57,7 @@
         <>
        
           <h1>{title}</h1>
-          <Chart 
+          <Chart style={{ width: '100%', height: '400px' }}
             type="bar" 
             options={{
               responsive: true,
@@ -147,119 +147,119 @@
     };
 
 
-    const BubbleChartCountries = ({ title, datos }: { title: string; datos: { country: string; users: number; totalTime: number; averageTime: number }[] }) => {
-      // Mapeo de datos para la gráfica
-      const data = datos.map((item) => ({
-        x: item.country,
-        y: item.users, // Utilizamos la cantidad de usuarios para el eje Y
-        r: Math.min(item.users / 5, 100), // Ajustamos el tamaño máximo de las burbujas
-      }));
+    // const BubbleChartCountries = ({ title, datos }: { title: string; datos: { country: string; users: number; totalTime: number; averageTime: number }[] }) => {
+    //   // Mapeo de datos para la gráfica
+    //   const data = datos.map((item) => ({
+    //     x: item.country,
+    //     y: item.users, // Utilizamos la cantidad de usuarios para el eje Y
+    //     r: Math.min(item.users / 5, 100), // Ajustamos el tamaño máximo de las burbujas
+    //   }));
 
-      return (
-        <>
-          <h1>{title}</h1>
-          <Chart
-            type="bubble"
-            options={{
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: 'top' as const,
-                },
-                title: {
-                  display: true,
-                  text: 'Países que han ingresado',
-                },
-              },
-              scales: {
-                x: {
-                  title: {
-                    display: true,
-                    text: 'País',
-                  },
-                  type: 'category',
-                },
-                y: {
-                  title: {
-                    display: true,
-                    text: 'Cantidad de Usuarios',
-                  },
-                  min: -5000,
-                  max: Math.max(...datos.map(item => item.users)) + 10000, // Ajustar el rango máximo del eje Y
-                  ticks: {
-                    stepSize: 1,
-                  },
-                },
-              },
-            }}
-            data={{
-              datasets: [{
-                label: 'Cantidad de Usuarios por País',
-                data,
-                backgroundColor: 'rgba(75, 192, 192, 0.5)',
-              }]
-            }}
-          />
-        </>
-      );
-    };
+    //   return (
+    //     <>
+    //       <h1>{title}</h1>
+    //       <Chart
+    //         type="bubble"
+    //         options={{
+    //           responsive: true,
+    //           plugins: {
+    //             legend: {
+    //               position: 'top' as const,
+    //             },
+    //             title: {
+    //               display: true,
+    //               text: 'Países que han ingresado',
+    //             },
+    //           },
+    //           scales: {
+    //             x: {
+    //               title: {
+    //                 display: true,
+    //                 text: 'País',
+    //               },
+    //               type: 'category',
+    //             },
+    //             y: {
+    //               title: {
+    //                 display: true,
+    //                 text: 'Cantidad de Usuarios',
+    //               },
+    //               min: -5000,
+    //               max: Math.max(...datos.map(item => item.users)) + 10000, // Ajustar el rango máximo del eje Y
+    //               ticks: {
+    //                 stepSize: 1,
+    //               },
+    //             },
+    //           },
+    //         }}
+    //         data={{
+    //           datasets: [{
+    //             label: 'Cantidad de Usuarios por País',
+    //             data,
+    //             backgroundColor: 'rgba(75, 192, 192, 0.5)',
+    //           }]
+    //         }}
+    //       />
+    //     </>
+    //   );
+    // };
 
-    const BubbleChartCities = ({ title, datos }: { title: string; datos: { city: string; users: number; totalTime: number; averageTime: number }[] }) => {
-      // Mapeo de datos para la gráfica
-      const data = datos.map((item) => ({
-        x: item.city,
-        y: item.users, // Utilizamos la cantidad de usuarios para el eje Y
-        r: Math.min(item.users / 5, 100), // Ajustamos el tamaño máximo de las burbujas
-      }));
+    // const BubbleChartCities = ({ title, datos }: { title: string; datos: { city: string; users: number; totalTime: number; averageTime: number }[] }) => {
+    //   // Mapeo de datos para la gráfica
+    //   const data = datos.map((item) => ({
+    //     x: item.city,
+    //     y: item.users, // Utilizamos la cantidad de usuarios para el eje Y
+    //     r: Math.min(item.users / 5, 100), // Ajustamos el tamaño máximo de las burbujas
+    //   }));
 
-      return (
-        <>
-          <h1>{title}</h1>
-          <Chart
-            type="bubble"
-            options={{
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: 'top' as const,
-                },
-                title: {
-                  display: true,
-                  text: 'Ciudades que han ingresado',
-                },
-              },
-              scales: {
-                x: {
-                  title: {
-                    display: true,
-                    text: 'Ciudad',
-                  },
-                  type: 'category',
-                },
-                y: {
-                  title: {
-                    display: true,
-                    text: 'Cantidad de Usuarios',
-                  },
-                  min: -5000,
-                  max: Math.max(...datos.map(item => item.users)) + 10000, // Ajustar el rango máximo del eje Y
-                  ticks: {
-                    stepSize: 1,
-                  },
-                },
-              },
-            }}
-            data={{
-              datasets: [{
-                label: 'Cantidad de Usuarios por Ciudad',
-                data,
-                backgroundColor: 'rgba(75, 192, 192, 0.5)',
-              }]
-            }}
-          />
-        </>
-      );
-    };
+    //   return (
+    //     <>
+    //       <h1>{title}</h1>
+    //       <Chart
+    //         type="bubble"
+    //         options={{
+    //           responsive: true,
+    //           plugins: {
+    //             legend: {
+    //               position: 'top' as const,
+    //             },
+    //             title: {
+    //               display: true,
+    //               text: 'Ciudades que han ingresado',
+    //             },
+    //           },
+    //           scales: {
+    //             x: {
+    //               title: {
+    //                 display: true,
+    //                 text: 'Ciudad',
+    //               },
+    //               type: 'category',
+    //             },
+    //             y: {
+    //               title: {
+    //                 display: true,
+    //                 text: 'Cantidad de Usuarios',
+    //               },
+    //               min: -5000,
+    //               max: Math.max(...datos.map(item => item.users)) + 10000, // Ajustar el rango máximo del eje Y
+    //               ticks: {
+    //                 stepSize: 1,
+    //               },
+    //             },
+    //           },
+    //         }}
+    //         data={{
+    //           datasets: [{
+    //             label: 'Cantidad de Usuarios por Ciudad',
+    //             data,
+    //             backgroundColor: 'rgba(75, 192, 192, 0.5)',
+    //           }]
+    //         }}
+    //       />
+    //     </>
+    //   );
+    // };
 
     const BarChartPaths = ({ title, pathData }: { title: string; pathData: { path: string; users: number }[] }) => {
       const paths = pathData.map((item) => item.path);
@@ -467,75 +467,75 @@
       });
 
     // Dentro del componente App
-    const countryData = allResults.reduce((acc: any, current: any) => {
-      const { country, duration_minutes } = current;
+    // const countryData = allResults.reduce((acc: any, current: any) => {
+    //   const { country, duration_minutes } = current;
 
-      if (!country || !duration_minutes) return acc; // Control de datos faltantes
+    //   if (!country || !duration_minutes) return acc; // Control de datos faltantes
 
-      // Convertir el tiempo a minutos
-      const timeInMinutes = timeToMinutes(duration_minutes);
+    //   // Convertir el tiempo a minutos
+    //   const timeInMinutes = timeToMinutes(duration_minutes);
 
-      // Si el país no está en el acumulador, inicializa
-      if (!acc[country]) {
-        acc[country] = {
-          users: 0,
-          totalTime: 0,
-        };
-      }
+    //   // Si el país no está en el acumulador, inicializa
+    //   if (!acc[country]) {
+    //     acc[country] = {
+    //       users: 0,
+    //       totalTime: 0,
+    //     };
+    //   }
 
-      // Acumula la cantidad de usuarios y el tiempo
-      acc[country].users += 1; // Cantidad de usuarios
-      acc[country].totalTime += timeInMinutes; // Total tiempo en minutos
+    //   // Acumula la cantidad de usuarios y el tiempo
+    //   acc[country].users += 1; // Cantidad de usuarios
+    //   acc[country].totalTime += timeInMinutes; // Total tiempo en minutos
 
-      return acc;
-    }, {});
+    //   return acc;
+    // }, {});
 
-    const countryDataArray = Object.keys(countryData).map(country => {
-      const { users, totalTime } = countryData[country];
-      const averageTime = users ? totalTime / users : 0; // Manejo de división por cero
+    // const countryDataArray = Object.keys(countryData).map(country => {
+    //   const { users, totalTime } = countryData[country];
+    //   const averageTime = users ? totalTime / users : 0; // Manejo de división por cero
 
-      return {
-        country,
-        users,
-        totalTime,
-        averageTime,
-      };
-    }).sort((a, b) => b.users - a.users).splice(0, 20);
+    //   return {
+    //     country,
+    //     users,
+    //     totalTime,
+    //     averageTime,
+    //   };
+    // }).sort((a, b) => b.users - a.users).splice(0, 20);
 
-    const cityData = allResults.reduce((acc: any, current: any) => {
-      const { city, duration_minutes } = current;
+    // const cityData = allResults.reduce((acc: any, current: any) => {
+    //   const { city, duration_minutes } = current;
 
-      if (!city || !duration_minutes) return acc; // Control de datos faltantes
+    //   if (!city || !duration_minutes) return acc; // Control de datos faltantes
 
-      // Convertir el tiempo a minutos
-      const timeInMinutes = timeToMinutes(duration_minutes);
+    //   // Convertir el tiempo a minutos
+    //   const timeInMinutes = timeToMinutes(duration_minutes);
 
-      // Si la ciudad no está en el acumulador, inicializa
-      if (!acc[city]) {
-        acc[city] = {
-          users: 0,
-          totalTime: 0,
-        };
-      }
+    //   // Si la ciudad no está en el acumulador, inicializa
+    //   if (!acc[city]) {
+    //     acc[city] = {
+    //       users: 0,
+    //       totalTime: 0,
+    //     };
+    //   }
 
-      // Acumula la cantidad de usuarios y el tiempo
-      acc[city].users += 1; // Cantidad de usuarios
-      acc[city].totalTime += timeInMinutes; // Total tiempo en minutos
+    //   // Acumula la cantidad de usuarios y el tiempo
+    //   acc[city].users += 1; // Cantidad de usuarios
+    //   acc[city].totalTime += timeInMinutes; // Total tiempo en minutos
 
-      return acc;
-    }, {});
+    //   return acc;
+    // }, {});
 
-    const cityDataArray = Object.keys(cityData).map(city => {
-      const { users, totalTime } = cityData[city];
-      const averageTime = users ? totalTime / users : 0; // Manejo de división por cero
+    // const cityDataArray = Object.keys(cityData).map(city => {
+    //   const { users, totalTime } = cityData[city];
+    //   const averageTime = users ? totalTime / users : 0; // Manejo de división por cero
 
-      return {
-        city,
-        users,
-        totalTime,
-        averageTime,
-      };
-    }).sort((a, b) => b.users - a.users).splice(0, 20);
+    //   return {
+    //     city,
+    //     users,
+    //     totalTime,
+    //     averageTime,
+    //   };
+    // }).sort((a, b) => b.users - a.users).splice(0, 20);
 
     // Lógica para agrupar por ruta
     const pathDataArray = allResults.reduce((acc: any, current: any) => {
@@ -612,14 +612,17 @@
       const [currentStep, setCurrentStep] = useState(1);
       return (
         <>
-         <div className='flex flex-col items-center content-center'>
+            <div className='flex flex-col justify-center items-center'>
+                <img src="/logo.jpg" alt="Logo de class barber" className="w-20 h-20 rounded-full" />
+            </div>
+            <div className='flex flex-col items-center content-center'>
               <h1 className="text-3xl md:text-3xl font-bold leading-tighter tracking-tighter mb-1 font-heading">
                 <div className="mt-1">
                   <span>Control Class Barber</span>
                 </div>
               </h1>
             </div>
-        <div className="w-full">
+            <div className="w-full">
                 <div className="grid max-w-xs grid-cols-3	 gap-1 p-1 mx-auto my-2 bg-gray-100 rounded-lg " role="group">
                     <button onClick={() => setCurrentStep(1)}  type="button" className={`flex flex-row items-center content-center 
                         text-center px-1 py-1.5 text-xs font-medium
@@ -693,13 +696,14 @@
               title={`Usuarios por día en el mes ${new Date(0, monthSelect - 1).toLocaleString('es-ES', { month: 'long' })}`} 
               monthDaysUsers={dataUsers}
               monthSelect={monthSelect}
+              
             />
 
-            <BarChartWeekDays title='Usuarios por día de la semana' weekDaysUsers={weekDaysUsers}/>
+            {/* <BarChartWeekDays title='Usuarios por día de la semana' weekDaysUsers={weekDaysUsers}/> */}
 
             {/* Tabla dinámica con estilos */}
                           <br />
-                <GenericTable 
+                {/* <GenericTable 
               data={tableData}
               columns={[
                 { key: 'date', label: 'Fecha' },
@@ -708,10 +712,10 @@
                 { key: 'totalTime', label: 'Total de Tiempo (min)' },
                 { key: 'averageTime', label: 'Promedio Tiempo (min)' }
               ]}
-            />
-            <br />
+            /> */}
+            {/* <br /> */}
             {/* Componente de gráfica de burbujas */}
-            <BubbleChartCountries title="Cantidad de usuarios por País" datos={countryDataArray} />
+            {/* <BubbleChartCountries title="Cantidad de usuarios por País" datos={countryDataArray} />
 
             <GenericTable 
               data={countryDataArray}
@@ -721,8 +725,8 @@
                 { key: 'totalTime', label: 'Total Tiempo (min)' },
                 { key: 'averageTime', label: 'Promedio Tiempo (min)' }
               ]}
-            />
-                <br />
+            /> */}
+                {/* <br />
             <BubbleChartCities 
                 title="Cantidad de Usuarios por Ciudad"
                 datos={cityDataArray}
@@ -736,8 +740,8 @@
                   { key: 'totalTime', label: 'Total Tiempo (min)' },
                   { key: 'averageTime', label: 'Promedio Tiempo (min)' }
                 ]}
-              />
-                  <br />
+              /> */}
+                  {/* <br />
             <BarChartPaths title="Usuarios por Ruta" pathData={pathData} />
             <br />
             <h1>Tabla de Rutas</h1>
@@ -767,7 +771,7 @@
                   { key: 'totalTime', label: 'Total de Tiempo (min)' },
                   { key: 'averageTime', label: 'Promedio de Tiempo (min)' },
                 ]}
-              />
+              /> */}
               </div>
             }
           
