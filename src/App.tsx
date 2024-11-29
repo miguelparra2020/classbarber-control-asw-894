@@ -653,116 +653,122 @@
                     </button>
                 </div>
             </div>
-            {currentStep === 3 && <div className="p-4">
-          {isFetchingNextPage && <p>Cargando más datos...</p>}
-          <div className="mb-4">
-            <label className="font-semibold">Selecciona un mes:</label>
-            <select
-              value={monthSelect}
-              onChange={(e) => setMonthSelect(Number(e.target.value))}
-              className="border rounded-md p-2 bg-white text-black ml-2"
-            >
-              <option value="1">Enero</option>
-              <option value="2">Febrero</option>
-              <option value="3">Marzo</option>
-              <option value="4">Abril</option>
-              <option value="5">Mayo</option>
-              <option value="6">Junio</option>
-              <option value="7">Julio</option>
-              <option value="8">Agosto</option>
-              <option value="9">Septiembre</option>
-              <option value="10">Octubre</option>
-              <option value="11">Noviembre</option>
-              <option value="12">Diciembre</option>
-            </select>
-          </div>
+            {currentStep === 1 && <>
+              <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=2&ctz=Europe%2FMadrid&showPrint=0&mode=AGENDA&src=M2VmNmJjMTljOTBkMThiYjQ3MDYzYjAzZmEyOTlkYzFjOWJiMWYxMjM4NjcyMDg0OTA1ZmNhZjg4MDhiYjYxMUBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23616161"  width="100%" height="600" scrolling="no"></iframe>
+            </>}
+            {currentStep === 2 && <>
+              <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=2&ctz=Europe%2FMadrid&showPrint=0&mode=AGENDA&src=NWE1Zjc1M2ViOTZiYWM4MTU1YTYwNzExNDkzOWY0ODRmMjlmMTRjOThhNGU2NThlNzgyYWM1MDk2NDI5ZTgwMkBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&color=%23A79B8E"  width="100%" height="600"  scrolling="no"></iframe>
+            </>}
+            {currentStep === 3 && 
+              <div className="p-4">
+            {isFetchingNextPage && <p>Cargando más datos...</p>}
+            <div className="mb-4">
+              <label className="font-semibold">Selecciona un mes:</label>
+              <select
+                value={monthSelect}
+                onChange={(e) => setMonthSelect(Number(e.target.value))}
+                className="border rounded-md p-2 bg-white text-black ml-2"
+              >
+                <option value="1">Enero</option>
+                <option value="2">Febrero</option>
+                <option value="3">Marzo</option>
+                <option value="4">Abril</option>
+                <option value="5">Mayo</option>
+                <option value="6">Junio</option>
+                <option value="7">Julio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Septiembre</option>
+                <option value="10">Octubre</option>
+                <option value="11">Noviembre</option>
+                <option value="12">Diciembre</option>
+              </select>
+            </div>
 
-          <h1 className="text-xl font-bold mb-4">Mes seleccionado: {new Date(0, monthSelect - 1).toLocaleString('es-ES', { month: 'long' })}</h1>
+            <h1 className="text-xl font-bold mb-4">Mes seleccionado: {new Date(0, monthSelect - 1).toLocaleString('es-ES', { month: 'long' })}</h1>
 
-          <h2 className="text-lg mb-4">Total de usuarios del mes: {allResults.length}</h2>
+            <h2 className="text-lg mb-4">Total de usuarios del mes: {allResults.length}</h2>
 
-          {/* Componente de gráfica de barras */}
-          <BarChartMonthDays 
-            title={`Usuarios por día en el mes ${new Date(0, monthSelect - 1).toLocaleString('es-ES', { month: 'long' })}`} 
-            monthDaysUsers={dataUsers}
-            monthSelect={monthSelect}
-          />
-
-          <BarChartWeekDays title='Usuarios por día de la semana' weekDaysUsers={weekDaysUsers}/>
-
-          {/* Tabla dinámica con estilos */}
-                        <br />
-              <GenericTable 
-            data={tableData}
-            columns={[
-              { key: 'date', label: 'Fecha' },
-              { key: 'day', label: 'Día' },
-              { key: 'users', label: 'Cantidad de Usuarios' },
-              { key: 'totalTime', label: 'Total de Tiempo (min)' },
-              { key: 'averageTime', label: 'Promedio Tiempo (min)' }
-            ]}
-          />
-          <br />
-          {/* Componente de gráfica de burbujas */}
-          <BubbleChartCountries title="Cantidad de usuarios por País" datos={countryDataArray} />
-
-          <GenericTable 
-            data={countryDataArray}
-            columns={[
-              { key: 'country', label: 'País' },
-              { key: 'users', label: 'Cantidad de Usuarios' },
-              { key: 'totalTime', label: 'Total Tiempo (min)' },
-              { key: 'averageTime', label: 'Promedio Tiempo (min)' }
-            ]}
-          />
-              <br />
-          <BubbleChartCities 
-              title="Cantidad de Usuarios por Ciudad"
-              datos={cityDataArray}
+            {/* Componente de gráfica de barras */}
+            <BarChartMonthDays 
+              title={`Usuarios por día en el mes ${new Date(0, monthSelect - 1).toLocaleString('es-ES', { month: 'long' })}`} 
+              monthDaysUsers={dataUsers}
+              monthSelect={monthSelect}
             />
 
-            <GenericTable 
-              data={cityDataArray}
+            <BarChartWeekDays title='Usuarios por día de la semana' weekDaysUsers={weekDaysUsers}/>
+
+            {/* Tabla dinámica con estilos */}
+                          <br />
+                <GenericTable 
+              data={tableData}
               columns={[
-                { key: 'city', label: 'Ciudad' },
+                { key: 'date', label: 'Fecha' },
+                { key: 'day', label: 'Día' },
+                { key: 'users', label: 'Cantidad de Usuarios' },
+                { key: 'totalTime', label: 'Total de Tiempo (min)' },
+                { key: 'averageTime', label: 'Promedio Tiempo (min)' }
+              ]}
+            />
+            <br />
+            {/* Componente de gráfica de burbujas */}
+            <BubbleChartCountries title="Cantidad de usuarios por País" datos={countryDataArray} />
+
+            <GenericTable 
+              data={countryDataArray}
+              columns={[
+                { key: 'country', label: 'País' },
                 { key: 'users', label: 'Cantidad de Usuarios' },
                 { key: 'totalTime', label: 'Total Tiempo (min)' },
                 { key: 'averageTime', label: 'Promedio Tiempo (min)' }
               ]}
             />
                 <br />
-          <BarChartPaths title="Usuarios por Ruta" pathData={pathData} />
-          <br />
-          <h1>Tabla de Rutas</h1>
-          <GenericTable 
-              data={pathData}
-              columns={[
-                { key: 'path', label: 'Ruta' },
-                { key: 'users', label: 'Cantidad de Usuarios' }
-              ]}
-            />
-          <br />
-          <PieChart data={pieData} />
-          <br />
-          <GenericTable 
-              data={deviceCountArray}
-              columns={[
-                { key: 'device', label: 'Dispositivo' },
-                { key: 'users', label: 'Cantidad de Usuarios' }
-              ]}
-            />
-            <br />
-            <h1>Totales</h1>
-            <GenericTable 
-              data={monthlySummaryArray}
-              columns={[
-                { key: 'totalUsers', label: 'Total de Usuarios' },
-                { key: 'totalTime', label: 'Total de Tiempo (min)' },
-                { key: 'averageTime', label: 'Promedio de Tiempo (min)' },
-              ]}
-            />
-           </div>
+            <BubbleChartCities 
+                title="Cantidad de Usuarios por Ciudad"
+                datos={cityDataArray}
+              />
 
+              <GenericTable 
+                data={cityDataArray}
+                columns={[
+                  { key: 'city', label: 'Ciudad' },
+                  { key: 'users', label: 'Cantidad de Usuarios' },
+                  { key: 'totalTime', label: 'Total Tiempo (min)' },
+                  { key: 'averageTime', label: 'Promedio Tiempo (min)' }
+                ]}
+              />
+                  <br />
+            <BarChartPaths title="Usuarios por Ruta" pathData={pathData} />
+            <br />
+            <h1>Tabla de Rutas</h1>
+            <GenericTable 
+                data={pathData}
+                columns={[
+                  { key: 'path', label: 'Ruta' },
+                  { key: 'users', label: 'Cantidad de Usuarios' }
+                ]}
+              />
+            <br />
+            <PieChart data={pieData} />
+            <br />
+            <GenericTable 
+                data={deviceCountArray}
+                columns={[
+                  { key: 'device', label: 'Dispositivo' },
+                  { key: 'users', label: 'Cantidad de Usuarios' }
+                ]}
+              />
+              <br />
+              <h1>Totales</h1>
+              <GenericTable 
+                data={monthlySummaryArray}
+                columns={[
+                  { key: 'totalUsers', label: 'Total de Usuarios' },
+                  { key: 'totalTime', label: 'Total de Tiempo (min)' },
+                  { key: 'averageTime', label: 'Promedio de Tiempo (min)' },
+                ]}
+              />
+              </div>
             }
           
            </>
