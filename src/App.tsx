@@ -51,8 +51,11 @@
       // Crear los labels incluyendo el número de día y el nombre del día de la semana
       const labels = Array.from({ length: monthDaysUsers.length }, (_, i) => `Día ${i + 1} - ${getDayOfWeek(i, monthSelect)}`);
 
+      
+
       return (
         <>
+       
           <h1>{title}</h1>
           <Chart 
             type="bar" 
@@ -606,9 +609,51 @@
           return () => clearInterval(intervalId);
         }
       }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
+      const [currentStep, setCurrentStep] = useState(1);
       return (
-        <div className="p-4">
+        <>
+         <div className='flex flex-col items-center content-center'>
+              <h1 className="text-3xl md:text-3xl font-bold leading-tighter tracking-tighter mb-1 font-heading">
+                <div className="mt-1">
+                  <span>Control Class Barber</span>
+                </div>
+              </h1>
+            </div>
+        <div className="w-full">
+                <div className="grid max-w-xs grid-cols-3	 gap-1 p-1 mx-auto my-2 bg-gray-100 rounded-lg " role="group">
+                    <button onClick={() => setCurrentStep(1)}  type="button" className={`flex flex-row items-center content-center 
+                        text-center px-1 py-1.5 text-xs font-medium
+                         ${currentStep === 1 ? "text-white bg-gray-900" : "text-gray-900 bg- hover:bg-gray-200"}
+                        rounded-lg`}>
+                            {currentStep === 1 && <><span className="relative flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>&nbsp; &nbsp;
+                   </>} &nbsp;
+                            Agenda Oscar Rodríguez
+                        
+                    </button>
+                    <button onClick={() => setCurrentStep(2)} type="button" className={`flex flex-row items-center content-center text-center px-1 py-1.5 text-xs 
+                    font-medium  ${currentStep === 2 ? "text-white bg-gray-900" : "text-gray-900 bg- hover:bg-gray-200"} 
+                    rounded-lg`}>
+                        {currentStep === 2 && <><span className="relative flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>&nbsp; &nbsp;
+                   </>} &nbsp; Agenda Daniel S. Cano
+                    </button>
+                    <button onClick={() => setCurrentStep(3)}   type="button" className={`flex flex-row items-center content-center text-center px-1 py-1.5 
+                    text-xs font-medium ${currentStep === 3 ? "text-white bg-gray-900" : "text-gray-900 bg- hover:bg-gray-200"} 
+                    rounded-lg`}>
+                        {currentStep === 3 && <><span className="relative flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                    </span>&nbsp; &nbsp;
+                   </>} &nbsp; Estadistica de ingresos
+                    </button>
+                </div>
+            </div>
+            {currentStep === 3 && <div className="p-4">
           {isFetchingNextPage && <p>Cargando más datos...</p>}
           <div className="mb-4">
             <label className="font-semibold">Selecciona un mes:</label>
@@ -717,6 +762,10 @@
               ]}
             />
            </div>
+
+            }
+          
+           </>
       );
     }
 
