@@ -699,11 +699,11 @@
               
             />
 
-            {/* <BarChartWeekDays title='Usuarios por día de la semana' weekDaysUsers={weekDaysUsers}/> */}
+            <BarChartWeekDays title='Usuarios por día de la semana' weekDaysUsers={weekDaysUsers}/>
 
-            {/* Tabla dinámica con estilos */}
+            {/* Tabla dinámica con estilos */} 
                           <br />
-                {/* <GenericTable 
+                <GenericTable 
               data={tableData}
               columns={[
                 { key: 'date', label: 'Fecha' },
@@ -712,11 +712,11 @@
                 { key: 'totalTime', label: 'Total de Tiempo (min)' },
                 { key: 'averageTime', label: 'Promedio Tiempo (min)' }
               ]}
-            /> */}
-            {/* <br /> */}
+            />
+            <br />
             {/* Componente de gráfica de burbujas */}
-            {/* <BubbleChartCountries title="Cantidad de usuarios por País" datos={countryDataArray} />
-
+            {/* <BubbleChartCountries title="Cantidad de usuarios por País" datos={countryDataArray} /> */}
+{/* 
             <GenericTable 
               data={countryDataArray}
               columns={[
@@ -726,7 +726,7 @@
                 { key: 'averageTime', label: 'Promedio Tiempo (min)' }
               ]}
             /> */}
-                {/* <br />
+                 {/* <br />
             <BubbleChartCities 
                 title="Cantidad de Usuarios por Ciudad"
                 datos={cityDataArray}
@@ -741,7 +741,7 @@
                   { key: 'averageTime', label: 'Promedio Tiempo (min)' }
                 ]}
               /> */}
-                  {/* <br />
+                  <br />
             <BarChartPaths title="Usuarios por Ruta" pathData={pathData} />
             <br />
             <h1>Tabla de Rutas</h1>
@@ -771,7 +771,7 @@
                   { key: 'totalTime', label: 'Total de Tiempo (min)' },
                   { key: 'averageTime', label: 'Promedio de Tiempo (min)' },
                 ]}
-              /> */}
+              />
               </div>
             }
           
